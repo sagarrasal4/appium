@@ -70,7 +70,7 @@ public class Demo extends Capability{
 			      DR.findElementByAccessibilityId("1. Custom Adapter").click();
 			      WebElement ele3 = DR.findElementByAndroidUIAutomator("text(\"People Names\")");
 			      t.longPress(longPressOptions().withElement(element(ele3)).withDuration(ofSeconds(3))).release().perform();
-			    System.out.println(DR.findElement(By.className("android.widget.FrameLayout")).get(0).getText());
+			    System.out.println(DR.findElements(By.className("android.widget.FrameLayout")).get(0).getText());
 		
 		}
 		
