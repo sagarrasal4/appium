@@ -1,17 +1,30 @@
 package Demo;
 
 import java.net.MalformedURLException;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.touch.TouchActions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.touch.LongPressOptions;
 
+import static io.appium.java_client.touch.TapOptions.tapOptions;
+import static io.appium.java_client.touch.offset.ElementOption.element;
+import static io.appium.java_client.touch.LongPressOptions.longPressOptions;
+import static java.time.Duration.ofSeconds;
+
+import java.awt.event.KeyEvent;
 public class Demohybrid extends Capability {
 	
 	//AndroidDriver DR;
@@ -64,7 +77,7 @@ public class Demohybrid extends Capability {
 	}
 	
 	@Test (enabled = false)
-	public void  Test3()
+	public void  Test3() throws InterruptedException
 	{
 		DR.findElement(By.id("com.androidsample.generalstore:id/nameField")).sendKeys("Sagar");
 		DR.findElement(By.id("com.androidsample.generalstore:id/radioMale")).click();
@@ -79,15 +92,27 @@ public class Demohybrid extends Capability {
 	DR.findElements(By.xpath("//*[@text='ADD TO CART']")).get(0).click();
 	DR.findElement(By.id("com.androidsample.generalstore:id/appbar_btn_cart")).click();
 	
-	/*String a =DR.findElements(By.id("com.androidsample.generalstore:id/productPrice")).get(0).getText();
-	System.out.println(a);
+	Thread.sleep(3000);
+	String a =DR.findElements(By.id("com.androidsample.generalstore:id/productPrice")).get(0).getText();
+	a = a.substring(1);       
+	Double amount1value = Double.parseDouble(a);        
+	System.out.println(amount1value); 
 	String b =DR.findElements(By.id("com.androidsample.generalstore:id/productPrice")).get(1).getText();
-	System.out.println(b);*/
+    b = b.substring(1);         
+    Double amount2value = Double.parseDouble(b);    
+    System.out.println(amount2value); 
 	String total = DR.findElement(By.id("com.androidsample.generalstore:id/totalAmountLbl")).getText();
-    System.out.println(total);
+	total = total.substring(2);       
+	Double Totalvalue = Double.parseDouble(total);        
+	System.out.println(Totalvalue);
+    //i have to sum it and check if it is equal     
+	Double TotalsumofValue = amount1value+amount2value;       
+	System.out.println(TotalsumofValue);              
+	Assert.assertEquals(Totalvalue, TotalsumofValue);
+	
 	}
 	
-	@Test
+	@Test (enabled = true)
 	public void test4() throws InterruptedException
 	{
 		
@@ -112,10 +137,59 @@ for(int i=0;i<count;i++)
 		DR.findElements(By.id("com.androidsample.generalstore:id/productAddCart")).get(i).click();        
 	break;   
 	}     
-	}    
+	} 
+DR.findElement(By.id("com.androidsample.generalstore:id/appbar_btn_cart")).click();
+
+Thread.sleep(3000);
+
+DR.findElement(By.className("android.widget.CheckBox")).click();
+
+
+TouchAction T = new TouchAction(DR);
+
+
+WebElement a= DR.findElement(By.xpath("//*[@text='Please read our terms of conditions']"));
+
+
+T.longPress(longPressOptions().withElement(element(a)).withDuration(ofSeconds(3))).release().perform();
+
+
+//Close the terms
+DR.findElement(By.id("android:id/button1")).click();
+DR.findElement(By.id("com.androidsample.generalstore:id/btnProceed")).click();
+Thread.sleep(9000);
+
+/*
+//Long press on terms
+WebElement terms = DR.findElementById("com.androidsample.generalstore:id/termsButton");
+t.longPress(longPressOptions().withElement(element(terms)).withDuration(ofSeconds(3))).release().perform();
+
+//Close the terms
+DR.findElement(By.id("android:id/button1")).click();
+
+//Click on visit website
+DR.findElement(By.id("com.androidsample.generalstore:id/btnProceed")).click();
+*/
+
+//navigated to browser and work with browser 
+Set<String> contextNames = DR.getContextHandles();
+for (String contextName : contextNames) {
+    System.out.println(contextName); //prints out something like NATIVE_APP \n WEBVIEW_1
+
+       }
+   
+   DR.context("WEBVIEW_com.androidsample.generalstore"); // to switch to web or native app view
+    DR.findElement(By.xpath("//*[@name='q']")).sendKeys("IBM");
+    //i want to click on enter
+    DR.findElement(By.xpath("//*[@name='q']")).sendKeys(Keys.ENTER);
+   // DR.pressKey(new KeyEvent(AndroidKey.BACK));
+DR.context("NATIVE_APP");
+
 }
 
-	}
+}
+
+	
 	
 
 
